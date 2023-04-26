@@ -5,7 +5,7 @@ from numpy import ndarray
 import constants
 from agentsearch.state import State
 from agentsearch.action import Action
-
+from warehouse.cell import Cell
 
 class WarehouseState(State[Action]):
 
@@ -16,6 +16,7 @@ class WarehouseState(State[Action]):
         self.rows = rows
         self.columns = columns
         self.matrix = np.full([self.rows, self.columns], fill_value=0, dtype=int)
+        self.matrix_str = self.__str__()
 
         for i in range(self.rows):
             for j in range(self.columns):
@@ -27,55 +28,74 @@ class WarehouseState(State[Action]):
                     self.line_exit = i
                     self.column_exit = j
 
-    def can_move_up(self) -> bool:
-        if self.column_forklift-1 != constants.EMPTY:
+    def can_move_up(self, line, column) -> bool:
+        if self.matrix[line][column-1] != constants.EMPTY:
             return False
         else:
             return True
         pass
 
-    def can_move_right(self) -> bool:
-        if self.line_forklift+1 != constants.EMPTY:
+    def can_move_right(self, line, column) -> bool:
+        if self.matrix[line+1][column] != constants.EMPTY:
             return False
         else:
             return True
         pass
 
-    def can_move_down(self) -> bool:
-        if self.column_forklift+1 != constants.EMPTY:
+    def can_move_down(self, line, column) -> bool:
+        if self.matrix[line][column+1] != constants.EMPTY:
             return False
         else:
             return True
         pass
 
-    def can_move_left(self) -> bool:
-        if self.line_forklift-1 != constants.EMPTY:
+    def can_move_left(self, line, column) -> bool:
+        if self.matrix[line-1][column] != constants.EMPTY:
             return False
         else:
             return True
         pass
+    
+    def get_pair_value(self, cell1 : Cell, cell2 : Cell) -> int:
+        counter = 0
+        self.cell1 = cell1
+        self.cell2 = cell2
+        while cell1 != cell2:
+            if self.can_move_up(self, self.cell1.line, self.cell1.column):
+                self.move_up(self)
+                counter += 1
+            elif self.can_move_right(self, self.cell1.line, self.cell1.column):
+                self.move_right(self)
+                counter += 1
+            elif self.can_move_down(self, self.cell1.line, self.cell1.column):
+                self.move_down(self)
+                counter += 1
+            elif self.can_move_left(self, self.cell1.line, self.cell1.column):
+                self.move_left(self)
+                counter += 1
+        return counter
 
     def move_up(self) -> None:
-        if self.can_move_up():
+        if self.can_move_up(self.line_forklift, self.column_forklift):
             self.matrix[self.line_forklift][self.column_forklift] = constants.EMPTY
             self.matrix[self.line_forklift][self.column_forklift-1] = constants.FORKLIFT
             self.line_forklift = self.line_forklift-1
 
     def move_right(self) -> None:
-        if self.can_move_right():
+        if self.can_move_right(self.line_forklift, self.column_forklift):
             self.matrix[self.line_forklift][self.column_forklift] = constants.EMPTY
             self.matrix[self.line_forklift+1][self.column_forklift] = constants.FORKLIFT
             self.line_forklift = self.line_forklift+1
 
     def move_down(self) -> None:
-        if self.can_move_down():
+        if self.can_move_down(self.line_forklift, self.column_forklift):
             self.matrix[self.line_forklift][self.column_forklift] = constants.EMPTY
             self.matrix[self.line_forklift][self.column_forklift+1] = constants.FORKLIFT
             self.column_forklift = self.column_forklift+1
             
 
     def move_left(self) -> None:
-        if self.can_move_left():
+        if self.can_move_left(self.line_forklift, self.column_forklift):
             self.matrix[self.line_forklift][self.column_forklift] = constants.EMPTY
             self.matrix[self.line_forklift-1][self.column_forklift] = constants.FORKLIFT
             self.line_forklift = self.line_forklift-1
