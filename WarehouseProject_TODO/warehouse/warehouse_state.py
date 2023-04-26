@@ -28,7 +28,7 @@ class WarehouseState(State[Action]):
                     self.column_exit = j
 
     def can_move_up(self) -> bool:
-        if self.line_forklift-1 != constants.EMPTY:
+        if self.column_forklift-1 != constants.EMPTY:
             return False
         else:
             return True
@@ -49,33 +49,33 @@ class WarehouseState(State[Action]):
         pass
 
     def can_move_left(self) -> bool:
-        if self.column_forklift-1 != constants.EMPTY:
+        if self.line_forklift-1 != constants.EMPTY:
             return False
         else:
             return True
         pass
 
     def move_up(self) -> None:
-        if can_move_up():
+        if self.can_move_up():
             self.matrix[self.line_forklift][self.column_forklift] = constants.EMPTY
             self.matrix[self.line_forklift][self.column_forklift-1] = constants.FORKLIFT
             self.line_forklift = self.line_forklift-1
 
     def move_right(self) -> None:
-        if can_move_right():
+        if self.can_move_right():
             self.matrix[self.line_forklift][self.column_forklift] = constants.EMPTY
             self.matrix[self.line_forklift+1][self.column_forklift] = constants.FORKLIFT
             self.line_forklift = self.line_forklift+1
 
     def move_down(self) -> None:
-        if can_move_down():
+        if self.can_move_down():
             self.matrix[self.line_forklift][self.column_forklift] = constants.EMPTY
             self.matrix[self.line_forklift][self.column_forklift+1] = constants.FORKLIFT
             self.column_forklift = self.column_forklift+1
             
 
     def move_left(self) -> None:
-        if can_move_left():
+        if self.can_move_left():
             self.matrix[self.line_forklift][self.column_forklift] = constants.EMPTY
             self.matrix[self.line_forklift-1][self.column_forklift] = constants.FORKLIFT
             self.line_forklift = self.line_forklift-1
