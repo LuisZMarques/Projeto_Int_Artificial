@@ -622,9 +622,7 @@ class SearchSolver(threading.Thread):
         
         for p in self.agent.pairs:
             p.value = 20
-            self.text_problem.insert(tk.END, p.value+"\n")
- 
-
+            
         self.agent.search_method.stopped=True
         self.gui.problem_ga = WarehouseProblemGA(self.agent)
         self.gui.manage_buttons(data_set=tk.NORMAL, runSearch=tk.DISABLED, runGA=tk.NORMAL, stop=tk.DISABLED,
