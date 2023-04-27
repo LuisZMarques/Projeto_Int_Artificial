@@ -4,9 +4,7 @@ class Pair:
     def __init__(self, cell1, cell2):
         self.cell1 = cell1
         self.cell2 = cell2
-        self.matrix = WarehouseState.matrix_str
-        self.value = WarehouseState.get_pair_value(self.matrix, cell1, cell2)
-
+        self.value = 0
         # TODO?
 
     def hash(self):

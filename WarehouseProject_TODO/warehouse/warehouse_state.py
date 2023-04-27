@@ -16,7 +16,6 @@ class WarehouseState(State[Action]):
         self.rows = rows
         self.columns = columns
         self.matrix = np.full([self.rows, self.columns], fill_value=0, dtype=int)
-        self.matrix_str = self.__str__()
 
         for i in range(self.rows):
             for j in range(self.columns):
@@ -29,51 +28,16 @@ class WarehouseState(State[Action]):
                     self.column_exit = j
 
     def can_move_up(self, line, column) -> bool:
-        if self.matrix[line][column-1] != constants.EMPTY:
-            return False
-        else:
-            return True
-        pass
+        return self.matrix[line][column-1] != constants.EMPTY
 
     def can_move_right(self, line, column) -> bool:
-        if self.matrix[line+1][column] != constants.EMPTY:
-            return False
-        else:
-            return True
-        pass
-
+        return self.matrix[line+1][column] != constants.EMPTY
+ 
     def can_move_down(self, line, column) -> bool:
-        if self.matrix[line][column+1] != constants.EMPTY:
-            return False
-        else:
-            return True
-        pass
+        return self.matrix[line][column+1] != constants.EMPTY
 
     def can_move_left(self, line, column) -> bool:
-        if self.matrix[line-1][column] != constants.EMPTY:
-            return False
-        else:
-            return True
-        pass
-    
-    def get_pair_value(self, cell1 : Cell, cell2 : Cell) -> int:
-        counter = 0
-        self.cell1 = cell1
-        self.cell2 = cell2
-        while cell1 != cell2:
-            if self.can_move_up(self, self.cell1.line, self.cell1.column):
-                self.move_up(self)
-                counter += 1
-            elif self.can_move_right(self, self.cell1.line, self.cell1.column):
-                self.move_right(self)
-                counter += 1
-            elif self.can_move_down(self, self.cell1.line, self.cell1.column):
-                self.move_down(self)
-                counter += 1
-            elif self.can_move_left(self, self.cell1.line, self.cell1.column):
-                self.move_left(self)
-                counter += 1
-        return counter
+        return self.matrix[line-1][column] != constants.EMPTY
 
     def move_up(self) -> None:
         if self.can_move_up(self.line_forklift, self.column_forklift):
